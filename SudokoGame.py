@@ -6,12 +6,12 @@ table = [
 ]
 
 
-def fill_array(lst: list):
+def fill_array(lst: list,seq_input):
     current_index = 0
 
     for i in range(9):
         for _ in range(9):
-            lst[i].append(initial_table[current_index])
+            lst[i].append(seq_input[current_index])
             current_index += 1
 
 
@@ -31,9 +31,27 @@ def square_nighbors(index, t=table):
     return lst
 
 
-def is_valid(index, number, t=table):
+def row_neighbors(index, t=table):
+    lst = []
+    for i in range(9):
+        if t[index[0]][i] != t[index[0]][index[1]]:
+            lst.append(t[index[0]][i])
+    return lst
+
+
+def col_neighbors(index, t=table):
+    lst = []
+    for i in range(9):
+        if t[i][index[1]] != t[index[0]][index[1]]:
+            lst.append(t[i][index[1]])
+    return lst
+
+
     #           checking row                        checking column                         checking square
-    if number not in table[index[0], :] and number not in table[:, index[1]] and number not in square_nighbors(index,table):
+def is_valid(index, number, t=table):
+    if number not in row_neighbors(index, t) and number not in col_neighbors(index,
+                                                                             t) and number not in square_nighbors(
+            index, table):
         return True
     return False
 
@@ -58,7 +76,7 @@ def solve_sudoku(t):
 
 
 initial_table = input("insert the initial table:")
-fill_array(table)
+fill_array(table,initial_table)
 
 table = np.array(table)
 start = time()
@@ -74,3 +92,18 @@ show_table(table)
 actual_sol = "679518243543729618821634957794352186358461729216897534485276391962183475137945862"
 
 print("elapsed time: ", (end - start))
+
+
+def is_solved(t=table):
+    for i in range(9):
+        for j in range(9):
+            if not is_valid((i, j), t[i][j], t):
+                return False
+    return True
+
+
+print(is_solved(table))
+
+
+
+
